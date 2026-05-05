@@ -4,6 +4,9 @@ import UrlInput from "./components/UrlInput";
 import ResultsPanel from "./components/ResultsPanel";
 import SentimentChart from "./components/SentimentChart";
 import Spinner from "./components/Spinner";
+import MarketSummary from "./components/MarketSummary";
+import PurchaseCriteria from "./components/PurchaseCriteria";
+import CompetitorTable from "./components/CompetitorTable";
 
 export default function App() {
   const [url, setUrl] = useState("");
@@ -40,13 +43,9 @@ export default function App() {
         <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-violet-500/[0.05] rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         {/* Header */}
         <header className="text-center mb-12">
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium tracking-wide uppercase mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Gemini 1.5 Flash · AI Engine
-          </div> */}
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-4">
             Review
             <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
@@ -55,7 +54,7 @@ export default function App() {
           </h1>
           <p className="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
             Paste an Amazon product URL and get AI-powered insights — top buying factors,
-            common complaints, and sentiment breakdown in seconds.
+            common complaints, sentiment breakdown, competitor analysis, and revenue estimates.
           </p>
         </header>
 
@@ -81,11 +80,34 @@ export default function App() {
         {/* Results */}
         {data && (
           <div className="mt-12 space-y-8 animate-fade-in">
+            {/* Row 1: Buying Factors + Complaints */}
             <ResultsPanel
               factors={data.top_buying_factors}
               complaints={data.top_complaints}
             />
+
+            {/* Row 2: Sentiment Chart */}
             <SentimentChart data={data.sentiment} />
+
+            {/* Row 3: Market Intelligence (if available) */}
+            {data.market && (
+              <>
+                <MarketSummary
+                  productName={data.market.product_name}
+                  category={data.market.product_category}
+                  summary={data.market.market_summary}
+                />
+
+                <PurchaseCriteria
+                  criteria={data.market.key_purchase_criteria}
+                />
+
+                <CompetitorTable
+                  competitors={data.market.competitors}
+                  productRevenue={data.market.estimated_monthly_revenue}
+                />
+              </>
+            )}
           </div>
         )}
 
