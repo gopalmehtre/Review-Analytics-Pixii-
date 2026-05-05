@@ -16,9 +16,10 @@ export default function App() {
     setError(null);
     setData(null);
     try {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
       const endpoint = useMock
-        ? `/analyze?useMock=true`
-        : `/analyze?url=${encodeURIComponent(url)}&useMock=false`;
+        ? `${baseUrl}/analyze?useMock=true`
+        : `${baseUrl}/analyze?url=${encodeURIComponent(url)}&useMock=false`;
       const res = await axios.get(endpoint);
       setData(res.data);
     } catch (e) {
